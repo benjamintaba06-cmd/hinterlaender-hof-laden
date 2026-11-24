@@ -1,0 +1,37 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#203b2e">
+  <meta name="description" content="Hinterländer Hof – Laden. Regionales vom Hof, mit Liebe ausgewählt.">
+  <title>Hinterländer Hof – Laden</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:wght@500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+  <script src="config.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.57.4"></script>
+  <script defer src="app.js"></script>
+</head>
+<body>
+  <div class="announcement">Willkommen im Hinterländer Hof – schön, dass du da bist.</div>
+  <header class="site-header">
+    <a class="brand" href="#start" aria-label="Hinterländer Hof – Laden Startseite"><span class="brand-mark">HH</span><span><strong>Hinterländer Hof</strong><small>DER LADEN</small></span></a>
+    <nav aria-label="Hauptnavigation"><a href="#sortiment">Sortiment</a><a href="#hof">Unser Hof</a><a href="#kontakt">Kontakt</a></nav>
+    <button class="cart-button" id="cart-open" aria-label="Warenkorb öffnen">Warenkorb <span id="cart-count">0</span></button>
+  </header>
+  <main id="start">
+    <section class="hero">
+      <div class="hero-copy"><p class="eyebrow">GUT. REGIONAL. VOM HOF.</p><h1>Ein Stück<br><em>Hinterland</em><br>für zuhause.</h1><p class="hero-text">Entdecke ausgewählte Produkte vom Hinterländer Hof – ehrlich, mit Sorgfalt und viel Liebe zur Heimat.</p><a class="primary-link" href="#sortiment">Zum Laden <span>→</span></a></div>
+      <div class="hero-art" role="img" aria-label="Stimmungsvolle Illustration eines Hofladens"><div class="sun"></div><div class="hill hill-back"></div><div class="hill hill-front"></div><div class="barn"><div class="roof"></div><div class="barn-body"><div class="barn-door"></div><div class="barn-window"></div></div></div><div class="field-lines"></div><span class="art-note">VON HIER. FÜR DICH.</span></div>
+    </section>
+    <section class="trust-strip"><div><b>Mit Sorgfalt</b><span>ausgewählt</span></div><div><b>Aus der Region</b><span>für die Region</span></div><div><b>Persönlich</b><span>vom Hinterländer Hof</span></div></section>
+    <section class="products-section" id="sortiment"><div class="section-heading"><div><p class="eyebrow">UNSER SORTIMENT</p><h2>Aus dem Hofladen</h2></div><p>Lieblingsstücke und gute Dinge<br>aus unserer Heimat.</p></div><div class="category-row" id="categories"><button class="category active" data-category="Alle">Alles</button><button class="category" data-category="Lebensmittel">Lebensmittel</button><button class="category" data-category="Hofprodukte">Hofprodukte</button><button class="category" data-category="Besonderes">Besonderes</button></div><div class="product-grid" id="product-grid"><div class="empty-state"><span>✳</span><h3>Unser Laden füllt sich gerade.</h3><p>Die ersten Produkte findest du bald hier.</p></div></div></section>
+    <section class="story" id="hof"><div class="story-symbol">✳</div><div><p class="eyebrow">HINTERLÄNDER HOF</p><h2>Von hier.<br>Mit Herz gemacht.</h2><p>Der Hinterländer Hof steht für Verbundenheit mit unserer Region und Freude an guten Produkten. Hier entsteht ein Laden, der unsere Werte nach Hause bringt.</p></div></section>
+    <section class="newsletter" id="kontakt"><p class="eyebrow">BLEIB IN VERBINDUNG</p><h2>Schön, dass du hier bist.</h2><p>Du hast Fragen zu Produkten oder deiner Bestellung? Wir freuen uns auf deine Nachricht.</p><a class="primary-link" href="mailto:info@hinterlaender-hof.de">Kontakt aufnehmen <span>→</span></a></section>
+  </main>
+  <footer><a class="brand footer-brand" href="#start"><span class="brand-mark">HH</span><span><strong>Hinterländer Hof</strong><small>DER LADEN</small></span></a><p>Mit Liebe aus dem Hinterland.</p><div><a href="impressum.html">Impressum</a><a href="datenschutz.html">Datenschutz</a></div></footer>
+  <dialog id="cart-dialog" class="cart-dialog"><div class="dialog-head"><h2>Dein Warenkorb</h2><button id="cart-close" class="icon-button" aria-label="Schließen">×</button></div><div id="cart-items"><p>Dein Warenkorb ist noch leer.</p></div><div class="cart-total"><span>Zwischensumme</span><strong id="cart-total">0,00 €</strong></div><p class="checkout-note">Der Checkout wird nach Einrichtung der Zahlungs- und Versanddetails freigeschaltet.</p></dialog>
+</body>
+</html>
