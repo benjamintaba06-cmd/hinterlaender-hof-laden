@@ -4,7 +4,7 @@ import { existsSync } from "node:fs";
 const root = process.cwd();
 const out = new URL("../dist/", import.meta.url);
 await mkdir(out, { recursive: true });
-for (const file of ["index.html", "styles.css", "app.js", "_headers", "impressum.html", "datenschutz.html"]) {
+for (const file of ["index.html", "styles.css", "app.js", "admin.html", "admin.css", "admin.js", "_headers", "impressum.html", "datenschutz.html"]) {
   if (existsSync(new URL(`../${file}`, import.meta.url))) {
     await cp(new URL(`../${file}`, import.meta.url), new URL(file, out));
   }
