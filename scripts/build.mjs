@@ -9,6 +9,6 @@ for (const file of ["index.html", "styles.css", "app.js", "admin.html", "admin.c
   }
 }
 const url = process.env.SUPABASE_URL || "https://faphmmhhhqpvmmbilnlk.supabase.co";
-const key = process.env.SUPABASE_PUBLISHABLE_KEY || "sb_publishable_msNfNa6tj6vVJXINk6VZDAaApCZppyJXluIQUY";
+const key = process.env.SUPABASE_PUBLISHABLE_KEY || "sb_publishable_msNfNa6tj6vVJXISmdlVQQ_NOwRdTgR";
 await writeFile(new URL("config.js", out), `window.HOF_CONFIG = { supabaseUrl: ${JSON.stringify(url)}, supabasePublishableKey: ${JSON.stringify(key)} };\n`);
 console.log("Static site built to dist/");
