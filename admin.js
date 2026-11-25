@@ -1,7 +1,12 @@
-(() => {
+(async () => {
  const cfg=window.HOF_CONFIG||{};
- const ready=window.supabase&&cfg.supabaseUrl&&cfg.supabasePublishableKey&&!cfg.supabaseUrl.includes('YOUR_')&&!cfg.supabasePublishableKey.includes('YOUR_');
- const client=ready?window.supabase.createClient(cfg.supabaseUrl,cfg.supabasePublishableKey):null;
+ const supabaseUrl=cfg.supabaseUrl||'https://faphmmhhhqpvmmbilnlk.supabase.co';
+ const supabaseKey=cfg.supabasePublishableKey||'sb_publishable_msNfNa6tj6vVJXISmdlVQQ_NOwRdTgR';
+ let client=null;
+ try {
+   const {createClient}=await import('https://esm.sh/@supabase/supabase-js@2.57.4');
+   client=createClient(supabaseUrl,supabaseKey);
+ } catch (err) { console.error('Supabase client could not load:',err); }
  const $=id=>document.getElementById(id); const login=$('login-panel'), dashboard=$('dashboard');
  const money=n=>new Intl.NumberFormat('de-DE',{style:'currency',currency:'EUR'}).format(Number(n||0));
  const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
@@ -31,5 +36,5 @@
  $('reload-orders').addEventListener('click',loadOrders);$('order-list').addEventListener('click',async e=>{const id=e.target.closest('[data-save-order]')?.dataset.saveOrder;if(!id)return;const payment_status=$('order-list').querySelector('[data-pay="'+id+'"]').value;const order_status=$('order-list').querySelector('[data-status="'+id+'"]').value;const {error}=await client.from('orders').update({payment_status,order_status,updated_at:new Date().toISOString()}).eq('id',id);if(error){alert('Status konnte nicht gespeichert werden: '+error.message);return;}await loadOrders();});
  
  if(client){client.auth.onAuthStateChange((event)=>{if(event==='PASSWORD_RECOVERY'){login.hidden=false;dashboard.hidden=true;loginForm.hidden=true;recoveryForm.hidden=false;}});if(new URLSearchParams(location.search).get('mode')==='recovery'){loginForm.hidden=true;recoveryForm.hidden=false;login.hidden=false;dashboard.hidden=true;}requireAdmin();}
- else{login.hidden=false;dashboard.hidden=true;message('login-message','Bitte zuerst Supabase-URL und Publishable Key konfigurieren.');}
+ else{login.hidden=false;dashboard.hidden=true;message('login-message','Supabase konnte nicht geladen werden. Bitte Seite neu laden oder Browser-Netzwerk prüfen.');}
 })();
