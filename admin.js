@@ -1,19 +1,22 @@
-(async () => {
+(() => {
  const cfg=window.HOF_CONFIG||{};
  const supabaseUrl=cfg.supabaseUrl||'https://faphmmhhhqpvmmbilnlk.supabase.co';
  const supabaseKey=cfg.supabasePublishableKey||'sb_publishable_msNfNa6tj6vVJXISmdlVQQ_NOwRdTgR';
  let client=null;
  try {
-   const {createClient}=await import('https://esm.sh/@supabase/supabase-js@2.57.4');
-   client=createClient(supabaseUrl,supabaseKey);
- } catch (err) { console.error('Supabase client could not load:',err); }
+   if(window.supabase&&typeof window.supabase.createClient==='function') {
+     client=window.supabase.createClient(supabaseUrl,supabaseKey);
+   } else {
+     throw new Error('Supabase-Bibliothek fehlt (window.supabase.createClient nicht verfügbar).');
+   }
+ } catch (err) { console.error('Supabase client could not initialize:',err); }
  const $=id=>document.getElementById(id); const login=$('login-panel'), dashboard=$('dashboard');
  const money=n=>new Intl.NumberFormat('de-DE',{style:'currency',currency:'EUR'}).format(Number(n||0));
  const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
  let products=[];
  function message(id,s){$(id).textContent=s;}
  async function requireAdmin(){
-   if(!client){message('login-message','Supabase ist noch nicht konfiguriert.');return;}
+   if(!client){message('login-message','Supabase-Bibliothek wurde nicht geladen. Bitte Browser neu laden.');return;}
    const {data:{session}}=await client.auth.getSession();
    if(new URLSearchParams(location.search).get('mode')==='recovery'){login.hidden=false;dashboard.hidden=true;loginForm.hidden=true;recoveryForm.hidden=false;return;}
    if(!session){login.hidden=false;dashboard.hidden=true;return;}
