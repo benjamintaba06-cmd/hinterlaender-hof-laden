@@ -17,19 +17,45 @@
   grid.addEventListener('click',e=>{const id=e.target.closest('[data-add]')?.dataset.add;if(!id)return;const p=products.find(x=>String(x.id)===id);if(!p)return;const found=cart.find(x=>String(x.id)===id);found?found.qty++:cart.push({id:p.id,name:p.name,price:Number(p.price),qty:1});renderCart();});
   document.getElementById('cart-open').addEventListener('click',()=>dialog.showModal());document.getElementById('cart-close').addEventListener('click',()=>dialog.close());
   const checkoutForm=document.getElementById('checkout-form');
+  let sumupWidgetLoaded=false;
+  function loadSumUpWidget(){
+    if(window.SumUpCard)return Promise.resolve();
+    if(sumupWidgetLoaded)return new Promise((resolve,reject)=>{const t=setInterval(()=>{if(window.SumUpCard){clearInterval(t);resolve();}},100);setTimeout(()=>{clearInterval(t);reject(new Error('SumUp-Zahlungsfenster konnte nicht geladen werden.'));},10000);});
+    sumupWidgetLoaded=true;
+    return new Promise((resolve,reject)=>{const s=document.createElement('script');s.src='https://gateway.sumup.com/gateway/ecom/card/v2/sdk.js';s.onload=resolve;s.onerror=()=>reject(new Error('SumUp-Zahlungsfenster konnte nicht geladen werden.'));document.head.appendChild(s);});
+  }
   checkoutForm.addEventListener('submit',async e=>{
     e.preventDefault();
     const status=document.getElementById('checkout-status');
+    const button=checkoutForm.querySelector('button[type="submit"]');
+    const widget=document.getElementById('sumup-card');
     if(!client){status.textContent='Der Shop ist momentan nicht erreichbar. Bitte später erneut versuchen.';return;}
     if(cart.length!==1||cart[0].name!=='Pedigree of Pigeons by TABA Zugang'||cart[0].qty!==1){status.textContent='Der Online-Checkout ist aktuell nur für den Zugang zu Pedigree of Pigeons by TABA verfügbar.';return;}
-    status.textContent='Der monatliche Zugang wird gerade eingerichtet. Der Abschluss ist noch nicht freigeschaltet.';return;
-    const button=checkoutForm.querySelector('button[type="submit"]');button.disabled=true;status.textContent='Sichere Verbindung zu SumUp wird hergestellt …';
+    if(!checkoutForm.reportValidity())return;
+    button.disabled=true;status.textContent='Sichere Karteneinrichtung wird vorbereitet …';
     try{
       const fd=new FormData(checkoutForm);
-      const {data,error}=await client.functions.invoke('create-sumup-checkout',{body:{name:String(fd.get('name')||''),email:String(fd.get('email')||''),quantity:1}});
-      if(error||!data?.checkout_url)throw new Error(data?.error||error?.message||'Checkout konnte nicht gestartet werden.');
-      status.textContent='Du wirst sicher zu SumUp weitergeleitet …';
-      window.location.assign(data.checkout_url);
+      const {data,error}=await client.functions.invoke('create-sumup-checkout',{body:{name:String(fd.get('name')||''),email:String(fd.get('email')||''),acceptRecurring:fd.get('acceptRecurring')==='on'}});
+      if(error||!data?.checkout_id)throw new Error(data?.error||error?.message||'Karteneinrichtung konnte nicht gestartet werden.');
+      await loadSumUpWidget();
+      widget.hidden=false;
+      status.textContent='Bitte gib deine Karte im sicheren SumUp-Fenster ein und stimme der Speicherung für monatliche Abbuchungen zu.';
+      button.hidden=true;
+      window.SumUpCard.mount({id:'sumup-card',checkoutId:data.checkout_id,onResponse:async(type,body)=>{
+        if(type==='success'){
+          status.textContent='Karte bestätigt. Die erste Monatszahlung von 3,49 € wird verarbeitet …';
+          try{
+            const {data:done,error:finishError}=await client.functions.invoke('complete-taba-subscription',{body:{checkout_id:data.checkout_id}});
+            if(finishError||!done?.ok)throw new Error(done?.error||finishError?.message||'Abo konnte nicht aktiviert werden.');
+            status.textContent='Vielen Dank! Dein Monatsabo ist aktiv. Zugang gültig bis '+new Date(done.access_until).toLocaleDateString('de-DE')+'.';
+            widget.hidden=true;
+            renderCart();
+          }catch(err){status.textContent=err.message||'Aktivierung konnte nicht abgeschlossen werden. Bitte nicht erneut bezahlen.';}
+        }else if(type==='error'){
+          status.textContent='Die Karteneinrichtung wurde nicht abgeschlossen. Bitte prüfe deine Angaben und versuche es erneut.';
+          button.hidden=false;button.disabled=false;
+        }
+      }});
     }catch(err){status.textContent=err.message||'Checkout fehlgeschlagen.';button.disabled=false;}
   });
   document.getElementById('categories').addEventListener('click',e=>{const b=e.target.closest('[data-category]');if(!b)return;document.querySelectorAll('.category').forEach(x=>x.classList.toggle('active',x===b));render(b.dataset.category==='Alle'?products:products.filter(p=>p.category===b.dataset.category));});
