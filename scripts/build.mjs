@@ -8,7 +8,7 @@ for (const file of ["index.html", "styles.css", "app.js", "admin.html", "admin.c
     await cp(new URL(`../${file}`, import.meta.url), new URL(file, out));
   }
 }
-const url = process.env.SUPABASE_URL || "https://YOUR_PROJECT_REF.supabase.co";
-const key = process.env.SUPABASE_PUBLISHABLE_KEY || "YOUR_SUPABASE_PUBLISHABLE_KEY";
+const url = process.env.SUPABASE_URL || "https://faphmmhhhqpvmmbilnlk.supabase.co";
+const key = process.env.SUPABASE_PUBLISHABLE_KEY || "sb_publishable_msNfNa6tj6vVJXINk6VZDAaApCZppyJXluIQUY";
 await writeFile(new URL("config.js", out), `window.HOF_CONFIG = { supabaseUrl: ${JSON.stringify(url)}, supabasePublishableKey: ${JSON.stringify(key)} };\n`);
 console.log("Static site built to dist/");
