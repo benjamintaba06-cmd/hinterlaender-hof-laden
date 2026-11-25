@@ -43,3 +43,10 @@ Neue Supabase-Projekte schalten Tabellen nicht automatisch für die Data API fre
 - Edge Functions für Gastbestellungen, Preisprüfung, PayPal-Erstellung und PayPal-Webhooks
 - IBAN/Überweisungstext sowie Versandkosten und Liefergebiete hinterlegen
 - Impressum, Datenschutz, Widerruf und weitere Pflichtinformationen vervollständigen
+
+
+## Production-Domain
+
+- Shop-Domain: https://hinterlaender-hof-laden.com
+- Cloudflare Pages project: `hinterlaender-hof-laden`
+- Production branch: `main`
