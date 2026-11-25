@@ -111,3 +111,9 @@ section.advertising .advertising-mark small{margin-top:5px;text-align:center;fon
   .checkout-form input{height:50px;font-size:16px}
   .checkout-form button.primary-link{min-height:52px}
 }
+
+/* Consent und eingebettetes SumUp-Kartenfenster */
+.checkout-form .consent-row{display:flex;align-items:flex-start;gap:11px;margin:12px 0;padding:14px;border:1px solid #e1dfd3;border-radius:11px;background:#fffdf8;color:#485548;font-size:12px;line-height:1.6;font-weight:500}
+.checkout-form .consent-row input[type="checkbox"]{flex:0 0 18px;width:18px;height:18px;margin:1px 0 0;accent-color:#203b2e}
+#sumup-card{margin:12px 0;padding:14px;border:1px solid #e5e0d4;border-radius:12px;background:#fff}
+#sumup-card[hidden]{display:none}
