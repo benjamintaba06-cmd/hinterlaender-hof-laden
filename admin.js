@@ -10,6 +10,7 @@
  async function requireAdmin(){
    if(!client){message('login-message','Supabase ist noch nicht konfiguriert.');return;}
    const {data:{session}}=await client.auth.getSession();
+   if(new URLSearchParams(location.search).get('mode')==='recovery'){login.hidden=false;dashboard.hidden=true;loginForm.hidden=true;recoveryForm.hidden=false;return;}
    if(!session){login.hidden=false;dashboard.hidden=true;return;}
    const user=session.user;
    if(user.app_metadata?.role!=='admin'){await client.auth.signOut();login.hidden=false;dashboard.hidden=true;message('login-message','Dieses Konto hat keine Administratorberechtigung.');return;}
