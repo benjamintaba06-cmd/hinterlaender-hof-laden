@@ -21,7 +21,8 @@
     e.preventDefault();
     const status=document.getElementById('checkout-status');
     if(!client){status.textContent='Der Shop ist momentan nicht erreichbar. Bitte später erneut versuchen.';return;}
-    if(cart.length!==1||cart[0].name!=='TABA-Einladungscode'||cart[0].qty!==1){status.textContent='Der Online-Checkout ist aktuell nur für einen TABA-Einladungscode verfügbar.';return;}
+    if(cart.length!==1||cart[0].name!=='Pedigree of Pigeons by TABA Zugang'||cart[0].qty!==1){status.textContent='Der Online-Checkout ist aktuell nur für den Zugang zu Pedigree of Pigeons by TABA verfügbar.';return;}
+    status.textContent='Der monatliche Zugang wird gerade eingerichtet. Der Abschluss ist noch nicht freigeschaltet.';return;
     const button=checkoutForm.querySelector('button[type="submit"]');button.disabled=true;status.textContent='Sichere Verbindung zu SumUp wird hergestellt …';
     try{
       const fd=new FormData(checkoutForm);
