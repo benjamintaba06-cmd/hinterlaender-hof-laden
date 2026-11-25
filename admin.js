@@ -1,22 +1,21 @@
-(() => {
+(async () => {
  const cfg=window.HOF_CONFIG||{};
  const supabaseUrl=cfg.supabaseUrl||'https://faphmmhhhqpvmmbilnlk.supabase.co';
  const supabaseKey=cfg.supabasePublishableKey||'sb_publishable_msNfNa6tj6vVJXISmdlVQQ_NOwRdTgR';
  let client=null;
  try {
-   if(window.supabase&&typeof window.supabase.createClient==='function') {
-     client=window.supabase.createClient(supabaseUrl,supabaseKey);
-   } else {
-     throw new Error('Supabase-Bibliothek fehlt (window.supabase.createClient nicht verfügbar).');
-   }
- } catch (err) { console.error('Supabase client could not initialize:',err); }
+   const {createClient}=await import('https://esm.sh/@supabase/supabase-js@2.57.4');
+   client=createClient(supabaseUrl,supabaseKey);
+ } catch (err) {
+   console.error('Supabase client could not initialize:',err);
+ }
  const $=id=>document.getElementById(id); const login=$('login-panel'), dashboard=$('dashboard');
  const money=n=>new Intl.NumberFormat('de-DE',{style:'currency',currency:'EUR'}).format(Number(n||0));
  const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
  let products=[];
  function message(id,s){$(id).textContent=s;}
  async function requireAdmin(){
-   if(!client){message('login-message','Supabase-Bibliothek wurde nicht geladen. Bitte Browser neu laden.');return;}
+   if(!client){message('login-message','Supabase konnte nicht geladen werden. Bitte Verbindung prüfen und Seite neu laden.');return;}
    const {data:{session}}=await client.auth.getSession();
    if(new URLSearchParams(location.search).get('mode')==='recovery'){login.hidden=false;dashboard.hidden=true;loginForm.hidden=true;recoveryForm.hidden=false;return;}
    if(!session){login.hidden=false;dashboard.hidden=true;return;}
@@ -27,7 +26,7 @@
  const recoveryForm=$('recovery-form'); const loginForm=$('login-form');
  $('forgot-password').addEventListener('click',async()=>{const email=loginForm.elements.email.value.trim();if(!email){message('login-message','Bitte zuerst deine E-Mail-Adresse eintragen.');loginForm.elements.email.focus();return;}message('login-message','Reset-E-Mail wird angefordert …');const {error}=await client.auth.resetPasswordForEmail(email,{redirectTo:window.location.origin+'/admin.html?mode=recovery'});message('login-message',error?'Reset-E-Mail konnte nicht angefordert werden. Bitte später erneut versuchen.':'Falls ein Konto zu dieser Adresse besteht, wurde eine E-Mail mit dem Reset-Link versendet. Bitte auch den Spam-Ordner prüfen.');});
  recoveryForm.addEventListener('submit',async e=>{e.preventDefault();const fd=new FormData(recoveryForm);const password=String(fd.get('password'));if(password!==fd.get('password_confirm')){message('recovery-message','Die Passwörter stimmen nicht überein.');return;}if(password.length<10){message('recovery-message','Bitte mindestens 10 Zeichen verwenden.');return;}message('recovery-message','Passwort wird gespeichert …');const {error}=await client.auth.updateUser({password});if(error){message('recovery-message','Passwort konnte nicht gespeichert werden. Bitte den Reset-Link erneut öffnen.');return;}history.replaceState({},document.title,window.location.pathname);recoveryForm.hidden=true;loginForm.hidden=false;message('login-message','Passwort erfolgreich geändert. Du kannst dich jetzt anmelden.');});
- $('login-form').addEventListener('submit',async e=>{e.preventDefault();message('login-message','Anmeldung läuft …');if(!client){message('login-message','Supabase ist noch nicht konfiguriert.');return;}const fd=new FormData(e.currentTarget);const {error}=await client.auth.signInWithPassword({email:fd.get('email'),password:fd.get('password')});if(error){message('login-message','Anmeldung fehlgeschlagen. Bitte Zugangsdaten prüfen.');return;}await requireAdmin();});
+ $('login-form').addEventListener('submit',async e=>{e.preventDefault();message('login-message','Anmeldung läuft …');if(!client){message('login-message','Supabase konnte nicht geladen werden. Bitte Verbindung prüfen und Seite neu laden.');return;}const fd=new FormData(e.currentTarget);const {error}=await client.auth.signInWithPassword({email:fd.get('email'),password:fd.get('password')});if(error){message('login-message','Anmeldung fehlgeschlagen. Bitte Zugangsdaten prüfen.');return;}await requireAdmin();});
  $('logout').addEventListener('click',async()=>{await client.auth.signOut();await requireAdmin();});
  async function loadProducts(){const box=$('product-list');box.innerHTML='<p>Lade …</p>';const {data,error}=await client.from('products').select('*').order('sort_order').order('created_at',{ascending:false});if(error){box.textContent='Produkte konnten nicht geladen werden: '+error.message;return;}products=data||[];box.innerHTML=products.length?'<table><thead><tr><th>PRODUKT</th><th>KATEGORIE</th><th>PREIS</th><th>BESTAND</th><th>STATUS</th><th></th></tr></thead><tbody>'+products.map(p=>'<tr><td>'+esc(p.name)+'</td><td>'+esc(p.category)+'</td><td>'+money(p.price)+'</td><td>'+(p.stock_quantity??'–')+'</td><td><span class="status-pill">'+(p.active?'Sichtbar':'Entwurf')+'</span></td><td><button class="table-action" data-edit="'+p.id+'">Bearbeiten</button></td></tr>').join('')+'</tbody></table>':'<p>Noch keine Produkte angelegt.</p>';}
  async function loadOrders(){const box=$('order-list');box.innerHTML='<p>Lade …</p>';const {data,error}=await client.from('orders').select('id,order_number,customer_name,customer_email,payment_method,payment_status,order_status,total,created_at').order('created_at',{ascending:false}).limit(100);if(error){box.textContent='Bestellungen konnten nicht geladen werden: '+error.message;return;}box.innerHTML=data?.length?'<table><thead><tr><th>NR.</th><th>KUNDE</th><th>DATUM</th><th>ZAHLUNG</th><th>STATUS</th><th>SUMME</th></tr></thead><tbody>'+data.map(o=>'<tr><td>#'+o.order_number+'</td><td>'+esc(o.customer_name)+'<br><small>'+esc(o.customer_email)+'</small></td><td>'+new Date(o.created_at).toLocaleDateString('de-DE')+'</td><td><select data-pay="'+o.id+'"><option value="pending" '+(o.payment_status==='pending'?'selected':'')+'>Offen</option><option value="paid" '+(o.payment_status==='paid'?'selected':'')+'>Bezahlt</option><option value="failed" '+(o.payment_status==='failed'?'selected':'')+'>Fehlgeschlagen</option><option value="refunded" '+(o.payment_status==='refunded'?'selected':'')+'>Erstattet</option></select></td><td><select data-status="'+o.id+'"><option value="new" '+(o.order_status==='new'?'selected':'')+'>Neu</option><option value="processing" '+(o.order_status==='processing'?'selected':'')+'>In Bearbeitung</option><option value="shipped" '+(o.order_status==='shipped'?'selected':'')+'>Versendet</option><option value="completed" '+(o.order_status==='completed'?'selected':'')+'>Abgeschlossen</option><option value="cancelled" '+(o.order_status==='cancelled'?'selected':'')+'>Storniert</option></select></td><td>'+money(o.total)+' <button class="table-action" data-save-order="'+o.id+'">Speichern</button></td></tr>').join('')+'</tbody></table>':'<p>Noch keine Bestellungen vorhanden.</p>';}
