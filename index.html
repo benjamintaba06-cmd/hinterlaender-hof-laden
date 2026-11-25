@@ -12,7 +12,7 @@
   <link rel="stylesheet" href="styles.css?v=pedigree-card-2">
   <script src="config.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.57.4"></script>
-  <script defer src="app.js?v=sumup-checkout-1"></script>
+  <script defer src="app.js?v=monthly-access-1"></script>
 </head>
 <body>
   <div class="announcement">Willkommen im Hinterländer Hof – schön, dass du da bist.</div>
@@ -44,11 +44,11 @@
   </main>
   <footer><a class="brand footer-brand" href="#start"><span class="brand-mark">HH</span><span><strong>Hinterländer Hof</strong><small>DER LADEN</small></span></a><p>Mit Liebe aus dem Hinterland.</p><div><a href="impressum.html">Impressum</a><a href="datenschutz.html">Datenschutz</a></div></footer>
   <dialog id="cart-dialog" class="cart-dialog"><div class="dialog-head"><h2>Dein Warenkorb</h2><button id="cart-close" class="icon-button" aria-label="Schließen">×</button></div><div id="cart-items"><p>Dein Warenkorb ist noch leer.</p></div><div class="cart-total"><span>Zwischensumme</span><strong id="cart-total">0,00 €</strong></div><form id="checkout-form" class="checkout-form">
-  <p class="checkout-note">Digitaler Artikel: Nach bestätigter Zahlung erhältst du deinen persönlichen TABA-Einladungscode per E-Mail.</p>
+  <p class="checkout-note">Monatsmitgliedschaft: 3,49 € pro Monat für den Zugang zu Pedigree of Pigeons by TABA.</p>
   <label for="checkout-name">Vor- und Nachname</label><input id="checkout-name" name="name" type="text" autocomplete="name" minlength="2" maxlength="120" required>
-  <label for="checkout-email">E-Mail-Adresse für den Einladungscode</label><input id="checkout-email" name="email" type="email" autocomplete="email" required>
-  <button type="submit" class="primary-link">Sicher mit SumUp bezahlen · 5,00 €</button>
-  <p id="checkout-status" class="checkout-note" role="status" aria-live="polite"></p>
+  <label for="checkout-email">E-Mail-Adresse für deinen Zugang</label><input id="checkout-email" name="email" type="email" autocomplete="email" required>
+  <button type="submit" class="primary-link">Monatsabo · 3,49 € pro Monat</button>
+  <p id="checkout-status" class="checkout-note" role="status" aria-live="polite">Der monatliche Zugang wird gerade eingerichtet. Der Abschluss ist noch nicht freigeschaltet.</p>
 </form></dialog>
 </body>
 </html>
