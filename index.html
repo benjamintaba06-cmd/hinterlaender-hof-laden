@@ -44,13 +44,12 @@
   </main>
   <footer><a class="brand footer-brand" href="#start"><span class="brand-mark">HH</span><span><strong>Hinterländer Hof</strong><small>DER LADEN</small></span></a><p>Mit Liebe aus dem Hinterland.</p><div><a href="impressum.html">Impressum</a><a href="datenschutz.html">Datenschutz</a></div></footer>
   <dialog id="cart-dialog" class="cart-dialog"><div class="dialog-head"><h2>Dein Warenkorb</h2><button id="cart-close" class="icon-button" aria-label="Schließen">×</button></div><div id="cart-items"><p>Dein Warenkorb ist noch leer.</p></div><div class="cart-total"><span>Zwischensumme</span><strong id="cart-total">0,00 €</strong></div><form id="checkout-form" class="checkout-form">
-  <p class="checkout-note">Pedigree of Pigeons by TABA · 3,49 € pro Monat. Die Karte wird sicher über SumUp gespeichert. Die Karteneinrichtung wird von SumUp mit 1,00 € autorisiert und anschließend erstattet; danach erfolgt die erste Monatszahlung über 3,49 €.</p>
+  <p class="checkout-note">Pedigree of Pigeons by TABA · 3,49 € pro Monat. Die Zahlung und monatliche Verlängerung werden sicher über Stripe abgewickelt.</p>
   <label for="checkout-name">Vor- und Nachname</label><input id="checkout-name" name="name" type="text" autocomplete="name" minlength="2" maxlength="120" placeholder="Dein vollständiger Name" required>
   <label for="checkout-email">E-Mail-Adresse für deinen Zugang</label><input id="checkout-email" name="email" type="email" autocomplete="email" placeholder="name@beispiel.de" required>
   <label class="consent-row"><input type="checkbox" name="acceptRecurring" required> Ich stimme zu, dass meine Karte für wiederkehrende Abbuchungen von 3,49 € pro Monat gespeichert wird. Das Abo verlängert sich monatlich, bis ich kündige.</label>
   <button type="submit" class="primary-link">Abo starten · 3,49 € / Monat</button>
-  <div id="sumup-card" hidden></div>
-  <p id="checkout-status" class="checkout-note" role="status" aria-live="polite">Nach deiner Zustimmung kannst du die Karteneinrichtung sicher über SumUp abschließen.</p>
+  <p id="checkout-status" class="checkout-note" role="status" aria-live="polite">Du wirst zur sicheren Stripe-Zahlungsseite weitergeleitet.</p>
 </form></dialog>
 </body>
 </html>
