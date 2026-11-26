@@ -47,9 +47,11 @@
           try{
             const {data:done,error:finishError}=await client.functions.invoke('complete-taba-subscription',{body:{checkout_id:data.checkout_id}});
             if(finishError||!done?.ok)throw new Error(done?.error||finishError?.message||'Abo konnte nicht aktiviert werden.');
-            const {error:syncError}=await client.functions.invoke('sync-taba-access',{body:{checkout_id:data.checkout_id}});
-            if(syncError)throw new Error('Zahlung ist bestätigt, aber die TABA-Freischaltung konnte noch nicht synchronisiert werden. Bitte kontaktiere uns; bezahle nicht erneut.');
-            status.textContent='Vielen Dank! Dein Monatsabo ist aktiv. Zugang gültig bis '+new Date(done.access_until).toLocaleDateString('de-DE')+'.';
+            if(done.access_sync_pending){
+              status.textContent='Zahlung erfolgreich. Die TABA-Freischaltung benötigt noch eine manuelle Zuordnung. Bitte kontaktiere uns und bezahle nicht erneut.';
+            }else{
+              status.textContent='Vielen Dank! Dein Monatsabo ist aktiv. Zugang gültig bis '+new Date(done.access_until).toLocaleDateString('de-DE')+'.';
+            }
             widget.hidden=true;
             renderCart();
           }catch(err){status.textContent=err.message||'Aktivierung konnte nicht abgeschlossen werden. Bitte nicht erneut bezahlen.';}
